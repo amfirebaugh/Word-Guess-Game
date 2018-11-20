@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <title>Page Title</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css"/>
+    
+</head>
+<body>
+    <img id=logo src="assets/images/logo_1.png" alt="missing logo">
+    
+    <br><br>
+
+    <h1>Press any key to get started!</h1> <!-- MAYBE CHANGE TO SAY LETTER KEYS... -->
+    <h3>Refresh the page at anytime to reset the game.</h3>
+
+    <!-- Boxes for content -->
+    <div class="table">
+        <div class="tableRow">
+            <div class="tableCellLeft">
+                <img src="assets/images/start_game.jpg" id="tableImg" alt="missing start logo">
+                <!-- Insert/Change so the image will change when they get the word correct -->
+            </div>
+            <div class="tableCellRight">
+                <br>
+                <p>Wins:</p>
+                <p id="winCount"></p>
+                <p>Current Word:</p>
+                <p id="selectedWord"></p>
+                <p>Number of Guesses Remaining:</p>
+                <p id="triesLeft"></p>
+                <p>Letters Already Guessed:</p>
+                <p id="lettersGuessed"></p>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+    
+    3. Use key events to listen for the letters that your players will type.
+    onkeyup or onkeydown, not sure it matters
+    
+    
+    6. Wins: (# of times user guessed the word correctly).
+    
+       * If the word is `madonna`, display it like this when the game starts: `_ _ _ _ _ _ _`.
+    
+       * As the user guesses the correct letters, reveal them: `m a d o _  _ a`.
+    
+    7. Number of Guesses Remaining: (# of guesses remaining for the user).
+    
+    8. Letters Already Guessed: (Letters the user has guessed, displayed like `L Z Y H`).
+    
+    9. After the user wins/loses the game should automatically choose another word and make the user play it. 
+
+    ##### Word Guess Game Bonuses
+
+    1. Play a sound or song when the user guesses their word correctly, like in our demo.
+    2. Write some stylish CSS rules to make a design that fits your game's theme.
+    3. **HARD MODE:** Organize your game code as an object, except for the key events to get the letter guessed. This will be a challenge if you haven't coded with JavaScript before, but we encourage anyone already familiar with the language to try this out.
+    4. Save your whole game and its properties in an object.
+    5. Save any of your game's functions as methods, and call them underneath your object declaration using event listeners.
+    6. Don't forget to place your global variables and functions above your object.
+    * Remember: global variables, then objects, then calls.
+    7. Definitely talk with a TA or your instructor if you get tripped up during this challenge.
+    
+    -->
+
+    <script src="assets/javascript/game.js"></script>
+</body>
+</html>
