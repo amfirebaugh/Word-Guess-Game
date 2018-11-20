@@ -1,104 +1,123 @@
 // Global Variables
 
-var randomWord;
-// for underscores
-var currentWord;
+// var chosen;
+var currentWord = [];
 var currentWordIndex;
-var blanks;
-var ranNum;
+// var blanks;
+// var ranNum;
 var winCount = 0;
-var winCountZero = 0;
-var triesLeftFresh = 15;
-var lettersGuessedFresh;
-var letterCorrect;
+var lettersGuessed = [];
 var letterCounter = 0;
+var triesLeft = 15;
+var triesLeftZero = 0;
 
+var gameStart = false;
+var gameEnd = false;
+
+// Word List Array:
 var spaceWords = ["comet", "constellation", "meteor", "nebula", "pluto", "satellite", "eclipse", "telescope"];
 
-const selectedWord = document.getElementById("selectedWord");
-const triesLeft = document.getElementById("triesLeft");
-const lettersGuessed = document.getElementById("lettersGuessed");
 
-// Maybe I make another array for the images? I don't think so though...
+// BEGIN/RESET THE GAME:
 
+function resetGame() {
 
-// BEGIN THE GAME:
-hangmanSpace();
+    // reset these:
+    triesLeftZero = triesLeft;
+    gameStart = false;
 
-function hangmanSpace() {
-    // random space word generator:
-    ranNum = Math.floor(Math.random() * spaceWords.length);
-    currentWord = spaceWords[ranNum];
+    // random generator to select word from array:
+    currentWordIndex = Math.floor(Math.random() * (spaceWords.length));
 
-    // Making sure my random generator works and to use while testing...
-    console.log(currentWord);
+    // clear the page:
+    lettersGuessed = [];
+    currentWord = [];
 
-    
-    // sets game up so that a word is automatically choosen at random to begin the game    document.getElementById("selectedWord")
+    // go back to original image: &&&&&&&&&&&&&&&&& DOUBLE CHECK &&&&&&&&&&&&&&
+    document.getElementById("tableImg").src = "assets/images/start_game.jpg";
 
-    // fills in the correct number of blanks per random word choosen
-    // ********************************************************************* IT STILL DOESN'T LIKE BELOW AND ISN'T PRINTING MY UNDERSCORES!! GRRR
-    // I learned I can only use "push" here because I have made currentWord an array. Still not showing my blanks although I'm not getting the error message.... Tried the below code and it does exactly what line 50 (below the push) does now... (nothing)
-    // blanks = document.getElementById("selectedWord");
-    // blanks.textContent = currentWord;
-    // innerText and innerHTML don't work
+    // new word and underscores
+    for (var i = 0; i < spaceWords[currentWordIndex].length; i++) {
+        currentWord.push("_");
+    }
 
-    
-    var currentWord = [];
+    // run display function (below)
+    updateDisplay();
+};
+
+// display function for begin/restart game
+function updateDisplay() {
+
+    document.getElementById("winCount").innerhtml = winCount;
+    document.getElementById("selectedWord").innerhtml = "";
     for (var i = 0; i < currentWord.length; i++) {
-        currentWord[i].push("_ ");
-        // @@@@ document.getElementById("selectedWord").innerHTML += currentWord[i];
+        document.getElementById("selectedWord").innerhtml += currentWord[i];
     }
-
-    
-
-    // To start/restart/refresh the game:
-
-    winCountZero = document.getElementById("winCount").innerHTML = winCountZero;
-    triesLeftFresh = document.getElementById("triesLeft").innerHTML = triesLeftFresh;
-    lettersGuessedFresh = document.getElementById("lettersGuessed").innerHTML = " ";
-    document.getElementById("logo").src = "assets/images/logo_1.png";
-
-    
-}
-
-document.addEventListener('keyup', function(typing) {
-    var keys = (typing.key);
-    var pattern = new RegExp('[a-z]');
-    var output = pattern.test(keys);
-    if (output === false) {
-        alert("Please only enter lower-case letters!")
-    } 
-
-    letterCounter += 1;
-
-    if (letterCounter > 15) {
-        winCountZero = document.getElementById("winCount").innerHTML = winCountZero;
-        triesLeftFresh = document.getElementById("triesLeft").innerHTML = triesLeftFresh;
-        lettersGuessedFresh = document.getElementById("lettersGuessed").innerHTML = " ";
-        document.getElementById("logo").src = "assets/images/logo_1.png";
-        letterCounter = 0;
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Honestly not sure if below should have triesLeftZero or triesLeft....
+    document.getElementById("triesLeft").innerhtml = triesLeftZero;
+    document.getElementById("lettersGuessed").innerhtml = lettersGuessed;
+    if(triesLeftZero <= 0) {
+        gameEnd = true;
     }
+};
 
+document.onkeyup = function(event) {
+    // if game finishes --> reset it
+    if(gameEnd) {
+        resetGame();
+        gameEnd = false;
+    } else {
+        // Making sure alphabet was input by user
+        if(event.keyCode >= 65 && event.keyCode <= 90) {
+            makeGuess(event.key.toLowerCase());
+        }
+    }
+};
 
-    // ********************** HERE IT CANNOT READ THE LENGTH WHEN I TYPE IN A LETTER ON MY PAGE
-    for (let i = 0; i < randomWord.length; i++) {
-        if (randomWord[i] === keys) {
-            currentWord[i] = keys;
+function makeGuess(letter) {
+    if (triesLeftZero > 0) {
+        if (!gameStart) {
+            gameStart = true;
+        }
+
+        // double check for copied letters and pushing letters
+        if (lettersGuessed.indexOf(letter) === -1) {
+            lettersGuessed.push(letter);
+            replaceGuess(letter);
+        }
+    }
+    
+    updateDisplay();
+    addWins();
+};
+
+// Replacing correct guesses into underscores!
+function replaceGuess(letter) {
+    // had to change blanks to an array to push
+    var blanks = [];
+
+    // searching through all the letters of the words for matches and pushing them if they're correct
+    for (var i = 0; i < spaceWords[currentWordIndex].length; i++) {
+        if(spaceWords[currentWordIndex][i] === letter) {
+            blanks.push(i);
         }
     }
 
-    // *********************************************************
-    // Needs work below maybe? I'm confused...
-    var triesLeftFresh = triesLeftFresh - letterCounter;
-
-    if (currentWord.join('') === currentWord) {
-        winCount += 1;
-        document.getElementById("wincount").innerHTML = winCount;
-        triesLeftFresh = document.getElementById("triesLeft").innerHTML = triesLeftFresh;
-        lettersGuessedFresh = document.getElementById("lettersGuessed").innerHTML = " ";
+    // if the letter doesn't match it takes away a try, or guess from the tracker
+    if (blanks.length <= 0) {
+        triesLeftZero --;
+    } else {
+        // if the letter does match it should...hopefully... replace the '_' with the letter.... fingers crossed!
+        // I had trouble here making sure my array and variables were defined in the right places.
+        for(var i = 0; i < blanks.length; i++) {
+            currentWord[blanks[i]] = letter;
+        }
     }
+};
 
-})
-
-// End Game
+function addWins() {
+    if(currentWord.indexOf("_") === -1) {
+        winCount ++;
+        gameEnd = true;
+    }
+};
